@@ -10,7 +10,6 @@ jobs:
       - name: Restore folders
         run: |
           for f in *__*; do n="${f//__//}"; mkdir -p "$(dirname "$n")"; mv "$f" "$n"; done
-          rm -f build.yml
           ls -R | head -50
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
@@ -18,11 +17,12 @@ jobs:
         with: { gradle-version: '8.7' }
       - name: Android SDK/NDK
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+          SM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+          yes | $SM --licenses >/dev/null || true
+          $SM "platforms;android-34" "build-tools;34.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
       - name: Compile shaders
         run: |
-          G=$ANDROID_SDK_ROOT/ndk/27.2.12479018/shader-tools/linux-x86_64/glslc
+          G=$ANDROID_HOME/ndk/27.2.12479018/shader-tools/linux-x86_64/glslc
           A=app/src/main/assets
           mkdir -p $A
           $G --target-env=vulkan1.1 shaders/tri.vert -o $A/tri_vert.spv
