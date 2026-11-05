@@ -1,0 +1,33 @@
+plugins {
+  id 'com.android.application'
+}
+
+android {
+  namespace 'com.probe.g52'
+  compileSdk 34
+  ndkVersion '27.2.12479018'
+
+  defaultConfig {
+    applicationId 'com.probe.g52'
+    minSdk 26
+    targetSdk 34
+    versionCode 1
+    versionName '1.0'
+    ndk { abiFilters 'arm64-v8a' }
+    externalNativeBuild {
+      cmake { arguments '-DANDROID_STL=c++_static' }
+    }
+  }
+
+  externalNativeBuild {
+    cmake {
+      path 'src/main/cpp/CMakeLists.txt'
+      version '3.22.1'
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
